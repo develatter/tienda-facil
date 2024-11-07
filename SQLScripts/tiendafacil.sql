@@ -62,48 +62,6 @@ CREATE TABLE IF NOT EXISTS `order_details`
     FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
 );
 
-
--- Registros de prueba --
--- Clientes --
-INSERT INTO `customers` (`first_name`, `last_name`, `address`, `mail`, `active`)
-VALUES ('Juan', 'Perez', 'Calle 123', 'juan@mail.es', TRUE);
-INSERT INTO `customers` (`first_name`, `last_name`, `address`, `mail`, `active`)
-VALUES ('Maria', 'Gomez', 'Calle 456', 'maria@mail.es', TRUE);
-INSERT INTO `customers` (`first_name`, `last_name`, `address`, `mail`, `active`)
-VALUES ('Pedro', 'Lopez', 'Calle 789', 'pedro@mail.es', TRUE);
-
--- Productos --
-INSERT INTO `products` (`product_name`, `product_description`, `unit_price`, `current_stock`)
-VALUES ('Manzanas', 'Manzana golden procedencia Marruecos', 1.6, 100);
-INSERT INTO `products` (`product_name`, `product_description`, `unit_price`, `current_stock`)
-VALUES ('Peras', 'Pera conferencia procedencia España', 1.2, 50);
-INSERT INTO `products` (`product_name`, `product_description`, `unit_price`, `current_stock`)
-VALUES ('Plátanos', 'Platano canario procedencia Canarias', 1.8, 75);
-
--- Pedidos --
-INSERT INTO `orders` (`customer_id`, `delivery_date`)
-VALUES (1, '2024-11-07');
-INSERT INTO `order_details` (`order_id`, `product_id`, `product_amount`)
-VALUES (1, 1, 10);
-INSERT INTO `order_details` (`order_id`, `product_id`, `product_amount`)
-VALUES (1, 2, 5);
-INSERT INTO `order_details` (`order_id`, `product_id`, `product_amount`)
-VALUES (1, 3, 7);
-
-INSERT INTO `orders` (`customer_id`, `delivery_date`)
-VALUES (2, '2024-11-07');
-INSERT INTO `order_details` (`order_id`, `product_id`, `product_amount`)
-VALUES (2, 1, 5);
-INSERT INTO `order_details` (`order_id`, `product_id`, `product_amount`)
-VALUES (2, 2, 10);
-INSERT INTO `order_details` (`order_id`, `product_id`, `product_amount`)
-VALUES (2, 3, 3);
-
-INSERT INTO `orders` (`customer_id`, `order_date`, `delivery_date`)
-VALUES (3, '2023-11-07 00:00:00', '2024-11-07');
-INSERT INTO `order_details` (`order_id`, `product_id`, `product_amount`)
-VALUES (3, 1, 10);
-
 -- Funciones --
 -- Compureba si la fecha de un pedido es reciente --
 DELIMITER $$
@@ -112,11 +70,9 @@ CREATE FUNCTION `is_recent_order`(order_date DATETIME)
 BEGIN
     RETURN order_date >= DATE_SUB(CURRENT_DATE, INTERVAL 14 DAY);
 END $$
-DELIMITER ;
 
 -- Triggers --
 -- Actualiza el estado del cliente a activo cuando se realiza un pedido --
-DELIMITER $$
 CREATE TRIGGER `activate_customer_on_order`
     AFTER INSERT
     ON `orders`
@@ -124,12 +80,11 @@ CREATE TRIGGER `activate_customer_on_order`
 BEGIN
     UPDATE `customers`
     SET `active` = TRUE
-    WHERE `customer_id` = NEW.`customer_id`;
+    WHERE `customer_id` = NEW.`customer_id`
+      AND is_recent_order(NEW.`order_date`);
 END $$
-DELIMITER ;
 
 -- Desactiva el cliente cuando se elimina un pedido si no tiene más pedidos recientes --
-DELIMITER $$
 CREATE TRIGGER `deactivate_customer_on_order_delete`
     AFTER DELETE
     ON `orders`
@@ -148,11 +103,9 @@ BEGIN
         WHERE `customer_id` = OLD.`customer_id`;
     END IF;
 END $$
-DELIMITER ;
 
 -- Procedimientos almacenados --
 -- Desactiva los clientes que no han realizado pedidos en los últimos 14 días --
-DELIMITER $$
 CREATE PROCEDURE `set_customers_inactive`()
 BEGIN
     UPDATE `customers`
@@ -162,11 +115,9 @@ BEGIN
                                 FROM `orders`
                                 WHERE is_recent_order(`order_date`));
 END $$
-DELIMITER ;
 
 -- Eventos --
 -- Llama al procedimiento almacenado para desactivar clientes inactivos cada día --
-DELIMITER $$
 CREATE EVENT `deactivate_inactive_customers`
     ON SCHEDULE EVERY 1 DAY
         STARTS CURRENT_TIMESTAMP
