@@ -8,11 +8,11 @@
 		<version>3.3.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
+	<groupId>com.javalopers</groupId>
 	<artifactId>tiendafacil.backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>tiendafacil.backend</name>
-	<description>Demo project for Spring Boot</description>
+	<description>App de gestión de clientes y pedidos</description>
 	<url/>
 	<licenses>
 		<license/>
