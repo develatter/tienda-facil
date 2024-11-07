@@ -62,7 +62,6 @@ CREATE TABLE IF NOT EXISTS `order_details`
     FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
 );
 
-
 -- Funciones --
 -- Compureba si la fecha de un pedido es reciente --
 DELIMITER $$
@@ -71,11 +70,9 @@ CREATE FUNCTION `is_recent_order`(order_date DATETIME)
 BEGIN
     RETURN order_date >= DATE_SUB(CURRENT_DATE, INTERVAL 14 DAY);
 END $$
-DELIMITER ;
 
 -- Triggers --
 -- Actualiza el estado del cliente a activo cuando se realiza un pedido --
-DELIMITER $$
 CREATE TRIGGER `activate_customer_on_order`
     AFTER INSERT
     ON `orders`
@@ -84,12 +81,10 @@ BEGIN
     UPDATE `customers`
     SET `active` = TRUE
     WHERE `customer_id` = NEW.`customer_id`
-    AND is_recent_order(NEW.`order_date`);
+      AND is_recent_order(NEW.`order_date`);
 END $$
-DELIMITER ;
 
 -- Desactiva el cliente cuando se elimina un pedido si no tiene más pedidos recientes --
-DELIMITER $$
 CREATE TRIGGER `deactivate_customer_on_order_delete`
     AFTER DELETE
     ON `orders`
@@ -108,11 +103,9 @@ BEGIN
         WHERE `customer_id` = OLD.`customer_id`;
     END IF;
 END $$
-DELIMITER ;
 
 -- Procedimientos almacenados --
 -- Desactiva los clientes que no han realizado pedidos en los últimos 14 días --
-DELIMITER $$
 CREATE PROCEDURE `set_customers_inactive`()
 BEGIN
     UPDATE `customers`
@@ -122,11 +115,9 @@ BEGIN
                                 FROM `orders`
                                 WHERE is_recent_order(`order_date`));
 END $$
-DELIMITER ;
 
 -- Eventos --
 -- Llama al procedimiento almacenado para desactivar clientes inactivos cada día --
-DELIMITER $$
 CREATE EVENT `deactivate_inactive_customers`
     ON SCHEDULE EVERY 1 DAY
         STARTS CURRENT_TIMESTAMP
