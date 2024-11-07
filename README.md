@@ -122,7 +122,7 @@ y futuros colaboradores entiendan los requisitos técnicos.
    - **Swagger**: Documentación de la API.
    - **Markdown**: README.md para el repositorio del proyecto.
 
-## Instalción y Configuración Inicial
+## Instalación y Configuración Inicial
 
 1. **Clonar el repositorio**:
 
