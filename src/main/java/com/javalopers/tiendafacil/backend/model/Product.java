@@ -1,4 +1,4 @@
-package com.example.tiendafacil.backend.model;
+package com.javalopers.tiendafacil.backend.model;
 
 public class Product {
 }

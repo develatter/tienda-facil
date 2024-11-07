@@ -1,4 +1,4 @@
-package com.example.tiendafacil.backend.repository;
+package com.javalopers.tiendafacil.backend.repository;
 
 public interface CustomerRepository {
 }

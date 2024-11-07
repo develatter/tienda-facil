@@ -1,4 +1,4 @@
-package com.example.tiendafacil.backend.service;
+package com.javalopers.tiendafacil.backend.service;
 
 public class CustomerServiceImpl {
 }

@@ -1,4 +1,4 @@
-package com.example.tiendafacil.backend;
+package com.javalopers.tiendafacil.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

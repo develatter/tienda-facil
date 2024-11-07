@@ -1,4 +1,4 @@
-package com.example.tiendafacil.backend;
+package com.javalopers.tiendafacil.backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

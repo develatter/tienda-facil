@@ -1,4 +1,4 @@
-package com.example.tiendafacil.backend.controller;
+package com.javalopers.tiendafacil.backend.controller;
 
 public class CustomerController {
 }
