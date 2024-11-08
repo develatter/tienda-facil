@@ -1,39 +1,32 @@
-# Tienda Fácil - Gestión de Clients y Pedidos
+# Tienda Fácil - Gestión de Clientes y Pedidos
 
-<!--
-
-Archivo README.md incial para el proyecto Tienda Fácil.
-Este archivo ofrece una visión general del proyeto y sus requisitos.
-Actualizaremos este archivo conforme avanza el desarrollo para reflejar cambios y adiciones.
-
--->
+## Índice
+1. [Descripción del Proyecto]()
+2.  
 
 ## Descripción del Proyecto
 
+**Tienda Fácil** es un proyecto colaborativo originado en el Discord de Bytes Colaborativos con el objetivo 
+de diseñar e implementar un sistema de gestión que permita el registro y gestión de clientes y pedidos.
+
+Este sistema busca facilitar a los empleados el acceso a información de clientes y pedidos activos y pendientes,
+registrar nuevos pedidos para clientes y el resto de acciones necesarias para administrar un comercio online.
+
+### Equipo de Trabajo
+
+- **Líder de Equipo**: Alejandro 
+- **Backend**: 
+- **Frontend**: 
+- **Documentación y Testing**: 
+
 <!--
-Proporciona una descripción breve pero clara del proyecto para ayudar
-a otos colaboradores a entender el objeto principal de este sistema.
-
-<--
-
-Este proyecto tiene como objetivo implementar un sistema de gestión para **Tienda Fácil** que permite registar y
-gestionar clientes y pedidos.
-
-Este sistema busca facilitar a los empleados el acceso a información de clientes y pedidos activos y pendientes.
-
-### General
-
 - **Equipos de trabajo**: Un lider de equipo es responsable de la coordinación.
 - **Gestión de tareas**: Uso de un tablero de tareas en **Trello** para el seguimiento y orgabización.
 - **Contro de versiones**: Repsoitorio en **GitHub** con ramas independientes para cada desarrollador
 - **Acceso coordinadores**: Chantal y Jorge deben de tener acceso al trablero y repositorio de gitHub.
+-->
 
 ### Tecnologías recomendadas
-
-<!
-Detallar las tecnologías utilizadas garatntizar que todos los desarrolladores
-y futuros colaboradores entiendan los requisitos técnicos.
--->
 
 - **Backend**: Java con Spring Boot y base de datos MySql o PostgreSQL.
 - **Frontend**: Angular o React.
