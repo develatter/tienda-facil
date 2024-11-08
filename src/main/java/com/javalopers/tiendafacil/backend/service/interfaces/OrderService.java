@@ -2,7 +2,7 @@ package com.javalopers.tiendafacil.backend.service.interfaces;
 
 import com.javalopers.tiendafacil.backend.model.Order;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 public interface OrderService {
@@ -12,5 +12,5 @@ public interface OrderService {
 
     void deleteOrderById(Integer orderId);
 
-    Collection<Order> getAllOrders();
+    List<Order> getAllOrders();
 }
