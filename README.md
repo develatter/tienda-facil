@@ -1,8 +1,9 @@
 # Tienda Fácil - Gestión de Clientes y Pedidos
 
 ## Índice
-1. [Descripción del Proyecto]()
-2.  
+1. [Descripción General del Proyecto]()
+2. [Equipo de Trabajo]()
+3. [Especificaciones Técnicas]()
 
 ## Descripción del Proyecto
 
@@ -12,31 +13,29 @@ de diseñar e implementar un sistema de gestión que permita el registro y gesti
 Este sistema busca facilitar a los empleados el acceso a información de clientes y pedidos activos y pendientes,
 registrar nuevos pedidos para clientes y el resto de acciones necesarias para administrar un comercio online.
 
-### Equipo de Trabajo
+## Requisitos Funcionales
 
-- **Líder de Equipo**: Alejandro 
-- **Backend**: 
-- **Frontend**: 
-- **Documentación y Testing**: 
+1. **Gestión de Clientes**: Registrar, actualizar y consultar la información de clientes.
+2. **Gestión de Pedidos**: Registrar, actualizar, consultar y eliminar pedidos vinculados a clientes.
+3. **Generación de Reportes**: Elaboración de informes de clientes activos y pedidos pendientes.
 
-<!--
-- **Equipos de trabajo**: Un lider de equipo es responsable de la coordinación.
-- **Gestión de tareas**: Uso de un tablero de tareas en **Trello** para el seguimiento y orgabización.
-- **Contro de versiones**: Repsoitorio en **GitHub** con ramas independientes para cada desarrollador
-- **Acceso coordinadores**: Chantal y Jorge deben de tener acceso al trablero y repositorio de gitHub.
--->
+## Equipo de Trabajo
 
-### Tecnologías recomendadas
+- **Líder de Equipo**: Alejandro
 
-- **Backend**: Java con Spring Boot y base de datos MySql o PostgreSQL.
-- **Frontend**: Angular o React.
-- **Documentación**: Markdown (para el archivo `README.md´.) y **Swagger** (para la documentación de la API).
+    Coordinación y supervisión del proyecto, revisión de código y organización del trabajo de equipo. 
 
-## Objetivos del Proyecto
+- **Backend Developer**: ?
 
-1. **Gestión de Clientes**:Registrar, actualizar y cosnultar la información de clientes.
-2. **Gestión de pedidos**: Registra, actualizar, consultar y eliminar pedidos vinculados a clientes.
-3. **Reportes**: Generacón de repsorte de clientes activos y pedidos pendientes.
+    Desarrollo de la API REST e implementación de las base de datos.
+
+- **Frontend**: ? 
+    
+  Creación de la interfaz de usuario y diseño de una experiencia fluida.
+
+- **Documentación y Testing**: Jacinto Castillo y Luis 
+
+    Elbaroación de la documentación del proyecto y realización de pruebas funcionales y de  integración.
 
 ## Especificaciones Técnicas
 
@@ -55,43 +54,14 @@ registrar nuevos pedidos para clientes y el resto de acciones necesarias para ad
   - **Registro de pedido**: Visualización y gestión de pedidos con opciones de devoluciones.
   - **Resportes**: Vista para clientes activos y pedidos por clientes.
 
-## Funcionalidades Adicionales
+### Funcionalidades Adicionales
 
 - **Paginación**: En la lista de clientes y pedidos.
 - **Búsqueda y filtros** para clientes y pedidos.
 - **Validación de formularios** en todas las secciones de entradas de datos .
 
-## Roles del Equipo
 
-1. **Líder de Proyecto**: coordina, supervisa el progreso y revisa código.
-2. **Backend Developer(s)**: Desarrolla la API REST Y maneja las base de datos.
-3. **Frontend Developer(s)**: Crean la interfaz de usuario y asegura una experiencia fluida.
-4. **QA Tester** (opcional): Realizan pruebas funcionales e integración (puede ser un rol rotativo).
-
-## fase del Proyecto
-
-### Fase 1: Planificacion y Configuración
-
-- **Reunión de inicio**: Asiganr roles y definir expectativas.
-- **Configuracion de Trello**: Organizar tareas en columnas de flujo de trabajo ("To Do", "In Review", "Done").
-- **Configuración de Github**: Crear ramas de desarrollo y establecer reglas de distribución.
-- **Documentacón inicila**: Crear este archivo README.md con la descripción del proyecto.
-
-### Fase 2: desarrollo del Backend
-
-- **Modelo y Controladores del Clientes**: Crear el modelo y endpoints de clientes.
-- **Modelo y Controladores de pedidos**: Crear el modelo y endpoints de pedidos.
-- **Reportes**: Implementar endpoints para reportes de clientes activos y pedidos pendientes.
-- **Pruebas**: Realizar pruebas de la API y base de datos (unitarias e integración).
-
-### Fase 3: Desarrollo del Frontend
-
-- **Interfaz de Cliente**: Crear componentes de registro y lista de clientes.
-- **Interfaz de Pedido**: Crear componentes de registro y lista de pedidos.
-- **Vista de Reportes**: Implementar visualización de reportes.
-- **Integración API**: Conectar los componentes del frontend con los endpoints del backend.
-
-## Herramientas Recomendadas
+### Herramientas Recomendadas
 
 1. **Gestión de Tareas y Comunicación**
 
@@ -115,6 +85,43 @@ registrar nuevos pedidos para clientes y el resto de acciones necesarias para ad
    - **Swagger**: Documentación de la API.
    - **Markdown**: README.md para el repositorio del proyecto.
 
+<!--
+### Requisitos del proyecto
+
+- **Equipos de trabajo**: Un lider de equipo es responsable de la coordinación.
+- **Gestión de tareas**: Uso de un tablero de tareas en **Trello** para el seguimiento y orgabización.
+- **Contro de versiones**: Repsoitorio en **GitHub** con ramas independientes para cada desarrollador
+- **Acceso coordinadores**: Chantal y Jorge deben de tener acceso al trablero y repositorio de gitHub.
+
+### Tecnologías recomendadas
+
+- **Backend**: Java con Spring Boot y base de datos MySql o PostgreSQL.
+- **Frontend**: Angular o React.
+- **Documentación**: Markdown (para el archivo `README.md´.) y **Swagger** (para la documentación de la API).
+
+## Roadmap
+
+### Fase 1: Planificacion y Configuración
+
+- **Reunión de inicio**: Asiganr roles y definir expectativas.
+- **Configuracion de Trello**: Organizar tareas en columnas de flujo de trabajo ("To Do", "In Review", "Done").
+- **Configuración de Github**: Crear ramas de desarrollo y establecer reglas de distribución.
+- **Documentacón inicila**: Crear este archivo README.md con la descripción del proyecto.
+
+### Fase 2: desarrollo del Backend
+
+- **Modelo y Controladores del Clientes**: Crear el modelo y endpoints de clientes.
+- **Modelo y Controladores de pedidos**: Crear el modelo y endpoints de pedidos.
+- **Reportes**: Implementar endpoints para reportes de clientes activos y pedidos pendientes.
+- **Pruebas**: Realizar pruebas de la API y base de datos (unitarias e integración).
+
+### Fase 3: Desarrollo del Frontend
+
+- **Interfaz de Cliente**: Crear componentes de registro y lista de clientes.
+- **Interfaz de Pedido**: Crear componentes de registro y lista de pedidos.
+- **Vista de Reportes**: Implementar visualización de reportes.
+- **Integración API**: Conectar los componentes del frontend con los endpoints del backend.
+
 ## Instalción y Configuración Inicial
 
 1. **Clonar el repositorio**:
@@ -124,3 +131,4 @@ registrar nuevos pedidos para clientes y el resto de acciones necesarias para ad
      git clone https://github.com/usuario/repositorio.git
      cd repositorio.........
 ```
+-->
