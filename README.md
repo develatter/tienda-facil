@@ -21,19 +21,19 @@ registrar nuevos pedidos para clientes y el resto de acciones necesarias para ad
 
 ## Equipo de Trabajo
 
-- **Líder de Equipo**: Alejandro
+- **Líder de Equipo**: Alejandro López
 
     Coordinación y supervisión del proyecto, revisión de código y organización del trabajo de equipo. 
 
-- **Backend Developer**: ?
+- **Backend Developer**: Didier Maldonado y Alejandro López
 
     Desarrollo de la API REST e implementación de las base de datos.
 
-- **Frontend**: ? 
+- **Frontend**: Martín Canguillén 
     
   Creación de la interfaz de usuario y diseño de una experiencia fluida.
 
-- **Documentación y Testing**: Jacinto Castillo y Luis 
+- **Documentación y Testing**: Jacinto Castillo y Luis Martínez
 
     Elbaroación de la documentación del proyecto y realización de pruebas funcionales y de  integración.
 
@@ -41,9 +41,17 @@ registrar nuevos pedidos para clientes y el resto de acciones necesarias para ad
 
 ### Backend
 
-- **Tecnología**: Java con Spring Boot.
-- **Base de datos**: MySql y PostgreSQL.
-- **API REST** con enpoints diseñados para la gestión de clientes, pedidos y gereración reportes.
+- **Lenguaje**: Java 17
+- **Framework**: Spring Boot
+- **Base de datos**: MySQL
+- **Gestor de Dependencias**: Maven
+- **Dependencias**:
+  - Spring Web
+  - Spring Data JPA
+  - MySQL Driver
+  - Validation
+  - Lombok
+  - Spring Boot Dev Tools
 
 ### Frontend
 
