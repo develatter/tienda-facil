@@ -1,9 +1,14 @@
 # Tienda Fácil - Gestión de Clientes y Pedidos
 
 ## Índice
-1. [Descripción General del Proyecto]()
-2. [Equipo de Trabajo]()
-3. [Especificaciones Técnicas]()
+
+1. [Descripción del Proyecto](#descripción-del-proyecto)
+2. [Requisitos de la Aplicación](#requisitos-de-la-aplicación)
+3. [Equipo de Trabajo](#equipo-de-trabajo)
+4. [Especificaciones Técnicas](#especificaciones-técnicas)
+5. [Documentación de la Base de Datos](#documentación-de-la-base-de-datos)
+
+---
 
 ## Descripción del Proyecto
 
@@ -13,11 +18,15 @@ de diseñar e implementar un sistema de gestión que permita el registro y gesti
 Este sistema busca facilitar a los empleados el acceso a información de clientes y pedidos activos y pendientes,
 registrar nuevos pedidos para clientes y el resto de acciones necesarias para administrar un comercio online.
 
-## Requisitos Funcionales
+## Requisitos de la Aplicación
 
 1. **Gestión de Clientes**: Registrar, actualizar y consultar la información de clientes.
 2. **Gestión de Pedidos**: Registrar, actualizar, consultar y eliminar pedidos vinculados a clientes.
 3. **Generación de Reportes**: Elaboración de informes de clientes activos y pedidos pendientes.
+4. **Paginación** en la lista de clientes y pedidos.
+5. **Búsqueda y filtros** para clientes y pedidos.
+6. **Validación de formularios** en todas las secciones de entradas de datos.
+
 
 ## Equipo de Trabajo
 
@@ -53,7 +62,7 @@ registrar nuevos pedidos para clientes y el resto de acciones necesarias para ad
   - Lombok
   - Spring Boot Dev Tools
 
-### Frontend
+### Frontend (WIP)
 
 - **Framework**: Angular o React, según las habilidades del grupo.
 - **Componentes Principales**:
@@ -62,50 +71,185 @@ registrar nuevos pedidos para clientes y el resto de acciones necesarias para ad
   - **Registro de pedido**: Visualización y gestión de pedidos con opciones de devoluciones.
   - **Resportes**: Vista para clientes activos y pedidos por clientes.
 
-### Funcionalidades Adicionales
+### Herramientas Adicionales
+- **Gestión de Tareas y Comunicación**
+  - **Trello**: Para el flujo de trabajo.
+  - **Discord**: Comunicación en tiempo real y Reuniones Semanales.
 
-- **Paginación**: En la lista de clientes y pedidos.
-- **Búsqueda y filtros** para clientes y pedidos.
-- **Validación de formularios** en todas las secciones de entradas de datos .
+- **Control de Versiones** 
+  - **GitHub**
 
+- **Documentación**:
+  - **Writerside** para la elaboración del README.md y resto de archivos de documentación del proyecto.
+  - **Diagrams** para los diagramas de flujo y E/R
 
-### Herramientas Recomendadas
+## Documentación de la Base de Datos
 
-1. **Gestión de Tareas y Comunicación**
+### Diagrama E/R
+<img src="diagrama-er.png" alt="Diagrama E/R de la BBDD de Tienda Fácil">
 
-   - **Trello**: Para el flujo de trabajo.
-   - **Discord**: Comunicación en tiempo real.
-   - **Google Meet / Zoom**: Reuniones semanales.
+### Diccionario de Datos
 
-2. **Control de Versiones** -**GitHub**: Ramas independientes, pull Requets (PR) para integración.
+---
 
-3. **Backend**
+#### **Tabla: `customers` - Información de clientes**
 
-   - **Java con spring Boot**: Para la implementación de la API.
-   - **Base de Datos**: MySQL.
-   - **Postman**: Pruebas de la API REST.
+| **Nombre de la columna** | **Tipo de dato**          | **Restricciones**          | **Descripción**                                    |
+|:--------------------------|:-------------------------:|:--------------------------:|:--------------------------------------------------|
+| `customer_id`            | INTEGER, AUTO_INCREMENT  | PK                        | Identificador único del cliente.                 |
+| `first_name`             | VARCHAR(100)            | NOT NULL                  | Nombre del cliente.                              |
+| `last_name`              | VARCHAR(300)            | NOT NULL                  | Apellido del cliente.                            |
+| `address`                | VARCHAR(100)            | NOT NULL                  | Dirección del cliente.                           |
+| `mail`                   | VARCHAR(100)            | NOT NULL                  | Correo electrónico del cliente.                 |
+| `reg_date`               | DATETIME                | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Fecha de registro.                  |
+| `active`                 | BOOLEAN                 | NOT NULL                  | Indica si el cliente está activo.               |
 
-4. **Frontend**
+---
 
-   - **React**: Según la preferencia del equipo.
+#### **Tabla: `order_status` - Define estado del pedido**
 
-5. **Documentación**
-   - **Swagger**: Documentación de la API.
-   - **Markdown**: README.md para el repositorio del proyecto.
+| **Nombre de la columna** | **Tipo de dato**          | **Restricciones**          | **Descripción**                                    |
+|:--------------------------|:-------------------------:|:--------------------------:|:--------------------------------------------------|
+| `status_id`              | INTEGER, AUTO_INCREMENT  | PK                        | Identificador único del estado.                  |
+| `status`                 | VARCHAR(10)             | NOT NULL, UNIQUE          | Descripción del estado (e.g., Pendiente, Enviado, Entregado). |
+
+---
+
+#### **Tabla: `products` - Información de productos disponibles**
+
+| **Nombre de la columna** | **Tipo de dato**          | **Restricciones**          | **Descripción**                                    |
+|:--------------------------|:-------------------------:|:--------------------------:|:--------------------------------------------------|
+| `product_id`             | INTEGER, AUTO_INCREMENT  | PK                        | Identificador único del producto.                |
+| `product_name`           | VARCHAR(100)            | NOT NULL                  | Nombre del producto.                             |
+| `product_description`    | TEXT                    | NULL                      | Descripción del producto.                        |
+| `unit_price`             | DECIMAL(10, 2)          | NOT NULL                  | Precio unitario del producto.                    |
+| `current_stock`          | INTEGER                 | NOT NULL, DEFAULT 0       | Cantidad en stock.                               |
+
+---
+
+#### **Tabla: `orders` - Registra pedidos de clientes**
+
+| **Nombre de la columna** | **Tipo de dato**          | **Restricciones**          | **Descripción**                                    |
+|:--------------------------|:-------------------------:|:--------------------------:|:--------------------------------------------------|
+| `order_id`               | INTEGER, AUTO_INCREMENT  | PK                        | Identificador único del pedido.                  |
+| `customer_id`            | INTEGER                 | NOT NULL, FK              | Referencia al cliente (`customers.customer_id`). |
+| `order_date`             | DATETIME                | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Fecha del pedido.                       |
+| `delivery_date`          | DATE                    | NOT NULL                  | Fecha de entrega.                                |
+| `status_id`              | INTEGER                 | NOT NULL, DEFAULT 1, FK   | Referencia al estado del pedido (`order_status.status_id`). |
+
+---
+
+#### **Tabla: `order_details` - Detalle de productos incluidos en el pedido**
+
+| **Nombre de la columna** | **Tipo de dato**          | **Restricciones**          | **Descripción**                                    |
+|:--------------------------|:-------------------------:|:--------------------------:|:--------------------------------------------------|
+| `details_id`             | INTEGER, AUTO_INCREMENT  | PK                        | Identificador único del detalle.                 |
+| `order_id`               | INTEGER                 | NOT NULL, FK              | Referencia al pedido (`orders.order_id`).        |
+| `product_id`             | INTEGER                 | NOT NULL, FK              | Referencia al producto (`products.product_id`).  |
+| `product_amount`         | INTEGER                 | NOT NULL                  | Cantidad del producto.                           |
+
+#### **Reglas de eliminación**
+| **Regla**                              | **Descripción**                                                                 |
+|:---------------------------------------|:--------------------------------------------------------------------------------|
+| `ON DELETE CASCADE`                    | Los detalles se eliminan automáticamente si se elimina el pedido asociado.     |
+
+---
+### Paso a Tabla
+
+- Tabla customers: Información de clientes
+  - Columnas:
+    - customer_id (INTEGER, AUTO_INREMENT, PK): identificador único del cliente.
+    - first_name (VARCHAR(100), NOT NULL): Nombre del cliente.
+    - last_name (VARCHAR(300), NOT NULL): Apellido del cliente.
+    - address (VARCHAR(100), NOT NULL): Dirección del cliente.
+    - mail (VARCHAR(100), NOT NULL): Correo electrónico.
+    - reg_date (DATETIME, NOT NULL, DEFAULT CURRENT_TIMESTAMP): Fecha de registro.
+    - active (BOOLEAN, NOT NULL): Indica si el cliente está activo.
+- Tabla order_status: Define estado del pedido
+  - Columnas:
+    - status_id (INTEGER, AUTO_INCREMENT, PK): Identificador único del estado.
+    - status (VARCHAR(10), NOT NULL, UNIQUE): Descripción del estado (p. ej., Pendiente, Enviado, Entregado).
+- Tabla products: Información de productos disponibles
+  - Columnas:
+    - product_id (INTEGER, AUTO_INCREMENT, PK): Identificador único del producto.
+    - product_name (VARCHAR(100), NOT NULL): Nombre del producto.
+    - product_description (TEXT): Descripción del producto.
+    - unit_price (DECIMAL(10, 2), NOT NULL): Precio unitario del producto.
+    - current_stock (INTEGER, NOT NULL, DEFAULT 0): Cantidad en stock.
+- Tabla orders: Registra pedidos de clientes
+  - Columnas:
+    - order_id (INTEGER, AUTO_INCREMENT, PK): Identificador único del pedido.
+    - customer_id (INTEGER, NOT NULL, FK): Referencia al cliente (customers.customer_id).
+    - order_date (DATETIME, NOT NULL, DEFAULT CURRENT_TIMESTAMP): Fecha del pedido.
+    - delivery_date (DATE, NOT NULL): Fecha de entrega.
+    - status_id (INTEGER, NOT NULL, DEFAULT 1, FK): Referencia al estado del pedido (order_status.status_id).
+- Tabla order_details: Detalle de productos incluídos en el pedido
+  - Columnas:
+    - details_id (INTEGER, AUTO_INCREMENT, PK): Identificador único del detalle.
+    - order_id (INTEGER, NOT NULL, FK): Referencia al pedido (orders.order_id).
+    - product_id (INTEGER, NOT NULL, FK): Referencia al producto (products.product_id).
+    - product_amount (INTEGER, NOT NULL): Cantidad del producto.
+  - Reglas de eliminación:
+    - Los detalles se eliminan automáticamente si se elimina el pedido asociado (ON DELETE CASCADE).
+
+---
+
+### **Relaciones entre Tablas**
+
+| **Relación**                          | **Origen**           | **Destino**             | **Tipo de Relación** | **Descripción**                                                               |
+|:--------------------------------------|:---------------------|:------------------------|:--------------------:|:------------------------------------------------------------------------------|
+| `orders.customer_id`                  | `orders`            | `customers.customer_id` | FK                  | Un pedido pertenece a un cliente. Un cliente puede tener múltiples pedidos.   |
+| `orders.status_id`                    | `orders`            | `order_status.status_id`| FK                  | Un pedido tiene un estado.                                                    |
+| `order_details.order_id`              | `order_details`     | `orders.order_id`       | FK, ON DELETE CASCADE| Cada detalle pertenece a un pedido. Un pedido puede tener múltiples detalles. |
+| `order_details.product_id`            | `order_details`     | `products.product_id`   | FK                  | Cada detalle se asocia con un producto.                                       |
+
+---
+
+#### **Explicación de las Relaciones**
+
+##### **1. orders ➡️ customers**
+- **Relación:** Cada pedido registrado en la tabla `orders` está asociado con un cliente específico en la tabla `customers`.
+- **Columna de referencia:** `orders.customer_id` es una clave foránea (FK) que apunta a `customers.customer_id`.
+- **Restricciones:**
+  - No se permite que un pedido exista sin un cliente válido.
+  - Al eliminar un cliente, los pedidos asociados no se eliminan automáticamente (no hay `ON DELETE CASCADE` en esta relación).
+
+---
+
+##### **2. orders ➡️ order_status**
+- **Relación:** Cada pedido tiene un estado asociado, registrado en la tabla `order_status`.
+- **Columna de referencia:** `orders.status_id` es una clave foránea (FK) que apunta a `order_status.status_id`.
+- **Restricciones:**
+  - No se permite que un pedido exista sin un estado válido.
+  - Al eliminar un estado, los pedidos asociados no se eliminan automáticamente (no hay `ON DELETE CASCADE` en esta relación).
+
+---
+
+##### **3. order_details ➡️ orders**
+- **Relación:** Cada detalle registrado en la tabla `order_details` pertenece a un pedido en la tabla `orders`.
+- **Columna de referencia:** `order_details.order_id` es una clave foránea (FK) que apunta a `orders.order_id`.
+- **Restricciones:**
+  - Los detalles del pedido se eliminan automáticamente si se elimina el pedido asociado, gracias a `ON DELETE CASCADE`.
+
+---
+
+##### **4. order_details ➡️ products**
+- **Relación:** Cada detalle registrado en la tabla `order_details` está asociado con un producto en la tabla `products`.
+- **Columna de referencia:** `order_details.product_id` es una clave foránea (FK) que apunta a `products.product_id`.
+- **Restricciones:**
+  - No se permite que un detalle exista sin un producto válido.
+  - No se eliminan automáticamente los detalles si se elimina un producto (no hay `ON DELETE CASCADE` en esta relación).
+
+---
+
+#### **Notas Técnicas**
+- **Claves Foráneas (FK):** Estas relaciones están implementadas con restricciones de clave foránea (`FOREIGN KEY`) para garantizar la integridad referencial.
+- **ON DELETE CASCADE:** La eliminación en cascada está configurada únicamente en la relación `order_details ➡️ orders`, permitiendo eliminar automáticamente los detalles de un pedido si el pedido asociado es eliminado.
+- **Integridad:** Las relaciones aseguran que los datos entre tablas estén sincronizados y que no haya valores huérfanos en las tablas dependientes.
+
+---
 
 <!--
-### Requisitos del proyecto
-
-- **Equipos de trabajo**: Un lider de equipo es responsable de la coordinación.
-- **Gestión de tareas**: Uso de un tablero de tareas en **Trello** para el seguimiento y orgabización.
-- **Contro de versiones**: Repsoitorio en **GitHub** con ramas independientes para cada desarrollador
-- **Acceso coordinadores**: Chantal y Jorge deben de tener acceso al trablero y repositorio de gitHub.
-
-### Tecnologías recomendadas
-
-- **Backend**: Java con Spring Boot y base de datos MySql o PostgreSQL.
-- **Frontend**: Angular o React.
-- **Documentación**: Markdown (para el archivo `README.md´.) y **Swagger** (para la documentación de la API).
 
 ## Roadmap
 
@@ -130,13 +274,4 @@ registrar nuevos pedidos para clientes y el resto de acciones necesarias para ad
 - **Vista de Reportes**: Implementar visualización de reportes.
 - **Integración API**: Conectar los componentes del frontend con los endpoints del backend.
 
-## Instalción y Configuración Inicial
-
-1. **Clonar el repositorio**:
-
-```bash
-
-     git clone https://github.com/usuario/repositorio.git
-     cd repositorio.........
-```
 -->
