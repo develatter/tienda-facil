@@ -44,7 +44,7 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 
     @Override
     public OrderDetailsDTO saveDetails(OrderDetailsDTO orderDetails) {
-        OrderDetails orderDetailsEntity = convertToEntity(orderDetails, orderRepository, productRepository);
+        OrderDetails orderDetailsEntity = convertToEntity(orderDetails);
         orderDetailsRepository.save(orderDetailsEntity);
         return convertToDTO(orderDetailsEntity);
     }
@@ -56,7 +56,7 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
                 .orElseThrow(() ->
                         new NoSuchElementException("No se encuentra el detalle del pedido con ID: " + id)
                 );
-        updateEntityWithDTO(orderDetails, orderDetailsEntity, orderRepository, productRepository);
+        updateEntityWithDTO(orderDetails, orderDetailsEntity);
         orderDetailsRepository.save(orderDetailsEntity);
         return convertToDTO(orderDetailsEntity);
     }
@@ -78,19 +78,14 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
         return orderDetailsDTO;
     }
 
-    public static OrderDetails convertToEntity(OrderDetailsDTO orderDetailsDTO,
-                                               OrderRepository orderRepository,
-                                               ProductRepository productRepository) {
+    private OrderDetails convertToEntity(OrderDetailsDTO orderDetailsDTO) {
         OrderDetails orderDetails = new OrderDetails();
-        updateEntityWithDTO(orderDetailsDTO, orderDetails, orderRepository, productRepository);
+        updateEntityWithDTO(orderDetailsDTO, orderDetails);
         orderDetails.setDetailsId(orderDetailsDTO.getDetailsId());
         return orderDetails;
     }
 
-    private static void updateEntityWithDTO(OrderDetailsDTO orderDetailsDTO,
-                                            OrderDetails orderDetails,
-                                            OrderRepository orderRepository,
-                                            ProductRepository productRepository) {
+    private void updateEntityWithDTO(OrderDetailsDTO orderDetailsDTO, OrderDetails orderDetails) {
         orderDetails.setOrder(orderRepository
                 .findById(orderDetailsDTO.getOrderId())
                 .orElseThrow(() ->

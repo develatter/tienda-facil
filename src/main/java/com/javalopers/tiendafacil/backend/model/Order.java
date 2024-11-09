@@ -46,5 +46,4 @@ public class Order {
             fetch = FetchType.EAGER
     )
     private List<OrderDetails> orderDetails;
-
 }
