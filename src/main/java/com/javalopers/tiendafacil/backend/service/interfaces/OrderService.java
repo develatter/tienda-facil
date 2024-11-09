@@ -1,17 +1,17 @@
 package com.javalopers.tiendafacil.backend.service.interfaces;
 
 import com.javalopers.tiendafacil.backend.dto.OrderDTO;
-import com.javalopers.tiendafacil.backend.model.Order;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface OrderService {
-    Order saveOrder(OrderDTO orderDTO);
+    OrderDTO saveOrder(OrderDTO orderDTO);
 
-    Optional<Order> findOrderById(Integer orderId);
+    OrderDTO findOrderById(Integer orderId);
+
+    OrderDTO updateOrder(Integer orderId, OrderDTO orderDTO);
 
     void deleteOrderById(Integer orderId);
 
-    List<Order> getAllOrders();
+    List<OrderDTO> findAllOrders();
 }

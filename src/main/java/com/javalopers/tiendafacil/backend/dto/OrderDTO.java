@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @ValidDeliveryDate
@@ -25,4 +26,5 @@ public class OrderDTO {
     @NotNull(message = "El estado del pedido no puede ser nulo")
     private Integer statusId;
 
+    private List<OrderDetailsDTO> orderDetails;
 }
