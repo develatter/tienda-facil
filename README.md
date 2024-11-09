@@ -1,9 +1,10 @@
 # Tienda Fácil - Gestión de Clientes y Pedidos
 
 ## Índice
-1. [Descripción General del Proyecto]()
-2. [Equipo de Trabajo]()
-3. [Especificaciones Técnicas]()
+1. [Descripción General del Proyecto](#descripción-del-proyecto)
+2. [Requisitos Funcionales](#requisitos-funcionales)
+3. [Equipo de Trabajo](#equipo-de-trabajo)
+4. [Especificaciones Técnicas](#especificaciones-técnicas)
 
 ## Descripción del Proyecto
 
