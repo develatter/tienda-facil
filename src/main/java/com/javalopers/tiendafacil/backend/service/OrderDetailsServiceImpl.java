@@ -1,40 +1,112 @@
 package com.javalopers.tiendafacil.backend.service;
 
+import com.javalopers.tiendafacil.backend.dto.OrderDetailsDTO;
 import com.javalopers.tiendafacil.backend.model.OrderDetails;
 import com.javalopers.tiendafacil.backend.repository.OrderDetailsRepository;
+import com.javalopers.tiendafacil.backend.repository.OrderRepository;
+import com.javalopers.tiendafacil.backend.repository.ProductRepository;
 import com.javalopers.tiendafacil.backend.service.interfaces.OrderDetailsService;
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
+@Transactional
 public class OrderDetailsServiceImpl implements OrderDetailsService {
-    private  OrderDetailsRepository orderDetailsRepository;
+    private OrderDetailsRepository orderDetailsRepository;
+    private OrderRepository orderRepository;
+    private ProductRepository productRepository;
 
-    @Autowired
-    public OrderDetailsServiceImpl(OrderDetailsRepository orderDetailsRepository) {
-        this.orderDetailsRepository = orderDetailsRepository;
+    @Override
+    public List<OrderDetailsDTO> findAllDetails() {
+        return orderDetailsRepository
+                .findAll()
+                .stream()
+                .map(OrderDetailsServiceImpl::convertToDTO)
+                .toList();
     }
 
     @Override
-    public List<OrderDetails> findAll() {
-        return orderDetailsRepository.findAll();
+    public OrderDetailsDTO findDetailById(Integer id) {
+        OrderDetails orderDetails = orderDetailsRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new NoSuchElementException("No se encuentra el detalle del pedido con ID: " + id)
+                );
+        return convertToDTO(orderDetails);
     }
 
     @Override
-    public Optional<OrderDetails> findById(Integer id) {
-        return orderDetailsRepository.findById(id);
+    public OrderDetailsDTO saveDetails(OrderDetailsDTO orderDetails) {
+        OrderDetails orderDetailsEntity = convertToEntity(orderDetails, orderRepository, productRepository);
+        orderDetailsRepository.save(orderDetailsEntity);
+        return convertToDTO(orderDetailsEntity);
     }
 
     @Override
-    public OrderDetails save(OrderDetails orderDetails) {
-        return orderDetailsRepository.save(orderDetails);
+    public OrderDetailsDTO updateDetails(Integer id, OrderDetailsDTO orderDetails) {
+        OrderDetails orderDetailsEntity = orderDetailsRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new NoSuchElementException("No se encuentra el detalle del pedido con ID: " + id)
+                );
+        updateEntityWithDTO(orderDetails, orderDetailsEntity, orderRepository, productRepository);
+        orderDetailsRepository.save(orderDetailsEntity);
+        return convertToDTO(orderDetailsEntity);
     }
 
     @Override
-    public void deleteById(Integer id) {
+    public void deleteDetailsById(Integer id) {
+        if (!orderDetailsRepository.existsById(id)) {
+            throw new NoSuchElementException("No se encuentra el detalle del pedido con ID: " + id);
+        }
         orderDetailsRepository.deleteById(id);
     }
+
+    public static OrderDetailsDTO convertToDTO(OrderDetails orderDetails) {
+        OrderDetailsDTO orderDetailsDTO = new OrderDetailsDTO();
+        orderDetailsDTO.setDetailsId(orderDetails.getDetailsId());
+        orderDetailsDTO.setOrderId(orderDetails.getOrder().getOrderId());
+        orderDetailsDTO.setProductId(orderDetails.getProduct().getProductId());
+        orderDetailsDTO.setProductAmount(orderDetails.getProductAmount());
+        return orderDetailsDTO;
+    }
+
+    public static OrderDetails convertToEntity(OrderDetailsDTO orderDetailsDTO,
+                                               OrderRepository orderRepository,
+                                               ProductRepository productRepository) {
+        OrderDetails orderDetails = new OrderDetails();
+        updateEntityWithDTO(orderDetailsDTO, orderDetails, orderRepository, productRepository);
+        orderDetails.setDetailsId(orderDetailsDTO.getDetailsId());
+        return orderDetails;
+    }
+
+    private static void updateEntityWithDTO(OrderDetailsDTO orderDetailsDTO,
+                                            OrderDetails orderDetails,
+                                            OrderRepository orderRepository,
+                                            ProductRepository productRepository) {
+        orderDetails.setOrder(orderRepository
+                .findById(orderDetailsDTO.getOrderId())
+                .orElseThrow(() ->
+                        new NoSuchElementException(
+                                "No se encuentra el pedido con ID: " + orderDetailsDTO.getOrderId()
+                        ))
+        );
+        orderDetails.setProduct(productRepository
+                .findById(orderDetailsDTO.getProductId())
+                .orElseThrow(() ->
+                        new NoSuchElementException(
+                                "No se encuentra el producto con ID: " + orderDetailsDTO.getProductId()
+                        ))
+        );
+        orderDetails.setProductAmount(orderDetailsDTO.getProductAmount());
+    }
+
+
 }
