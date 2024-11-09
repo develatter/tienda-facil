@@ -2,9 +2,9 @@ package com.javalopers.tiendafacil.backend.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -16,15 +16,34 @@ public class Order {
     @Column(name = "order_id")
     private Integer orderId;
 
-    @Column(name = "customer_id", nullable = false)
-    private Integer customerId;
+    @ManyToOne
+    @JoinColumn(
+            name = "customer_id",
+            nullable = false
+    )
+    private Customer customer;
 
-    @Column(name = "order_date", nullable = false)
+    @Column(
+            name = "order_date",
+            nullable = false
+    )
     private LocalDateTime orderDate;
 
-    @Column(name = "delivery_date", nullable = false)
+    @Column(
+            name = "delivery_date",
+            nullable = false
+    )
     private LocalDate deliveryDate;
 
-    @Column(name = "status_id", nullable = false)
-    private Integer statusId;
+    @ManyToOne
+    @JoinColumn(name = "status_id")
+    private OrderStatus status;
+
+    @OneToMany(
+            mappedBy = "order",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<OrderDetails> orderDetails;
+
 }
