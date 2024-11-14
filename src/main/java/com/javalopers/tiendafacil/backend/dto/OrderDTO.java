@@ -3,6 +3,7 @@ package com.javalopers.tiendafacil.backend.dto;
 import com.javalopers.tiendafacil.backend.validation.ValidDeliveryDate;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@Builder
 @ValidDeliveryDate
 public class OrderDTO {
     private Integer orderId;
