@@ -20,9 +20,9 @@ public class CustomerController {
 
     @PostMapping("/save")
     @ResponseStatus(HttpStatus.CREATED)
-    public CustomerDTO saveCustomer (@RequestBody Customer customer){
+    public CustomerDTO saveCustomer (@RequestBody CustomerDTO customerRequest){
 
-        return customerService.saveCustomer(customer);
+        return customerService.saveCustomer(customerRequest);
     }
 
     @GetMapping("/all")
@@ -41,9 +41,9 @@ public class CustomerController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public CustomerDTO updateCustomer (@PathVariable Integer  id, @RequestBody Customer customer){
+    public CustomerDTO updateCustomer (@PathVariable Integer  id, @RequestBody CustomerDTO customerRequest){
 
-        return customerService.updateCustomer(id,customer);
+        return customerService.updateCustomer(id,customerRequest);
 
     }
 
