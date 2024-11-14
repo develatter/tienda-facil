@@ -23,28 +23,39 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     @Override
-    public CustomerDTO saveCustomer(Customer customer) {
+    public CustomerDTO saveCustomer(CustomerDTO customerRequest) {
 
-        if(customerRepository.existsByMail(customer.getMail())){
+        Customer newCustomer = new Customer();
+        newCustomer.setCustomerId(customerRequest.getCustomerId());
+        newCustomer.setFirstName(customerRequest.getFirstName());
+        newCustomer.setLastName(customerRequest.getLastName());
+        newCustomer.setAddress(customerRequest.getAddress());
+        newCustomer.setMail(customerRequest.getMail());
+
+        if(customerRepository.existsByMail(newCustomer.getMail())){
             throw new IllegalArgumentException
-                    ("Customer with email " + customer.getMail() + " already exists.");
+                    ("Customer with email " + newCustomer.getMail() + " already exists.");
         }
-        if(customer.getRegDate() == null){
-            customer.setRegDate(LocalDateTime.now());
+        if(customerRequest.getRegDate() == null){
+            customerRequest.setRegDate(LocalDateTime.now());
         }
 
-        customerRepository.save(customer);
+        newCustomer.setRegDate(customerRequest.getRegDate());
+        newCustomer.setActive(customerRequest.getActive());
 
-        CustomerDTO customerDTO = new CustomerDTO();
-        customerDTO.setCustomerId(customer.getCustomerId());
-        customerDTO.setFirstName(customer.getFirstName());
-        customerDTO.setLastName(customer.getLastName());
-        customerDTO.setAddress(customer.getAddress());
-        customerDTO.setMail(customer.getMail());
-        customerDTO.setRegDate(customer.getRegDate());
-        customerDTO.setActive(customer.getActive());
 
-        return customerDTO;
+        customerRepository.save(newCustomer);
+
+        CustomerDTO customerResponse = new CustomerDTO();
+        customerResponse.setCustomerId(newCustomer.getCustomerId());
+        customerResponse.setFirstName(newCustomer.getFirstName());
+        customerResponse.setLastName(newCustomer.getLastName());
+        customerResponse.setAddress(newCustomer.getAddress());
+        customerResponse.setMail(newCustomer.getMail());
+        customerResponse.setRegDate(newCustomer.getRegDate());
+        customerResponse.setActive(newCustomer.getActive());
+
+        return customerResponse;
 
     }
 
@@ -93,37 +104,35 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     @Override
-    public CustomerDTO updateCustomer(Integer id, Customer customer) {
+    public CustomerDTO updateCustomer(Integer id, CustomerDTO customerRequest) {
 
         Customer existingCustomer = customerRepository.findById(id).
                 orElseThrow(()-> new NoSuchElementException("This Customer does not exist in our System"));
 
-        existingCustomer.setFirstName(customer.getFirstName());
-        existingCustomer.setLastName(customer.getLastName());
+        existingCustomer.setFirstName(customerRequest.getFirstName());
+        existingCustomer.setLastName(customerRequest.getLastName());
 
         // Corroborando único usuario por Mail
-        if (!existingCustomer.getMail().equals(customer.getMail())) {
-            if (customerRepository.existsByMail(customer.getMail())) {
-                throw new IllegalArgumentException("This Mail already exist in our System");
-            }
+        if (!existingCustomer.getMail().equals(customerRequest.getMail()) && customerRepository.existsByMail(customerRequest.getMail())) {
+            throw new IllegalArgumentException("This Mail already exists in our system");
         }
 
-        existingCustomer.setMail(customer.getMail());
-        existingCustomer.setAddress(customer.getAddress());
-        existingCustomer.setActive(customer.getActive());
+        existingCustomer.setMail(customerRequest.getMail());
+        existingCustomer.setAddress(customerRequest.getAddress());
+        existingCustomer.setActive(customerRequest.getActive());
 
         customerRepository.save(existingCustomer);
 
-        CustomerDTO customerDTO = new CustomerDTO();
-        customerDTO.setCustomerId(existingCustomer.getCustomerId());
-        customerDTO.setFirstName(customer.getFirstName());
-        customerDTO.setLastName(customer.getLastName());
-        customerDTO.setMail(customer.getMail());
-        customerDTO.setAddress(customer.getAddress());
-        customerDTO.setRegDate(existingCustomer.getRegDate());
-        customerDTO.setActive(customer.getActive());
+        CustomerDTO customerResponse = new CustomerDTO();
+        customerResponse.setCustomerId(existingCustomer.getCustomerId());
+        customerResponse.setFirstName(existingCustomer.getFirstName());
+        customerResponse.setLastName(existingCustomer.getLastName());
+        customerResponse.setMail(existingCustomer.getMail());
+        customerResponse.setAddress(existingCustomer.getAddress());
+        customerResponse.setRegDate(existingCustomer.getRegDate());
+        customerResponse.setActive(existingCustomer.getActive());
 
-        return customerDTO;
+        return customerResponse;
     }
 
     @Override

@@ -25,8 +25,7 @@ public class Customer {
     @Column(nullable = false, length = 100)
     private String address;
 
-    @Column(nullable = false, length = 100)
-    @Email
+    @Column(unique = true, nullable = false, length = 100)
     private String mail;
 
     @Column(name = "reg_date", nullable = false, updatable = false)
