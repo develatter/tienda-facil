@@ -2,60 +2,47 @@ package com.javalopers.tiendafacil.backend.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 @Data
+@Entity
 @Table(name = "orders")
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_id")
     private Integer orderId;
 
     @ManyToOne
-    @JoinColumn(
-            name = "customer_id",
-            nullable = false
-    )
+    @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
-    @Column(
-            name = "order_date",
-            nullable = false
-    )
+    @Column(name = "order_date", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime orderDate;
 
-    @Column(
-            name = "delivery_date",
-            nullable = false
-    )
+    @Column(name = "delivery_date", nullable = false)
     private LocalDate deliveryDate;
 
     @ManyToOne
-    @JoinColumn(name = "status_id")
+    @JoinColumn(name = "status_id", nullable = false)
     private OrderStatus status;
 
-    @OneToMany(
-            mappedBy = "order",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.EAGER
-    )
-    private List<OrderDetails> orderDetails;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderDetails> orderDetails = new ArrayList<>();
 
-
-    public void addOrderDetails(OrderDetails orderDetails) {
-        this.orderDetails.add(orderDetails);
-        orderDetails.setOrder(this);
+    @PrePersist
+    protected void onCreate() {
+        if (orderDate == null) {
+            orderDate = LocalDateTime.now();
+        }
     }
 
-    public void removeOrderDetails(OrderDetails orderDetails) {
-        this.orderDetails.remove(orderDetails);
-        orderDetails.setOrder(null);
+    public void addOrderDetails(OrderDetails details) {
+        orderDetails.add(details);
+        details.setOrder(this);
     }
-
 }
