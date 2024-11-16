@@ -54,8 +54,9 @@ public class OrderController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteOrder(@PathVariable Integer id) {
+    public ResponseEntity<String> deleteOrder(@PathVariable Integer id) {
         orderService.deleteOrderById(id);
+        return ResponseEntity.ok("El registro con id " +  id + " fue eliminado con éxito.");
     }
 
     @GetMapping("/{id}/details")

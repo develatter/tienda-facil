@@ -2,8 +2,10 @@ package com.javalopers.tiendafacil.backend.service;
 
 import com.javalopers.tiendafacil.backend.dto.OrderRequestDTO;
 import com.javalopers.tiendafacil.backend.dto.OrderDetailsRequestDTO;
+import com.javalopers.tiendafacil.backend.exception.CustomerDoesNotExistsException;
 import com.javalopers.tiendafacil.backend.exception.OrderDoesNotExistsException;
 import com.javalopers.tiendafacil.backend.exception.ProductNotFoundException;
+import com.javalopers.tiendafacil.backend.exception.StatusNotFoundException;
 import com.javalopers.tiendafacil.backend.model.Order;
 import com.javalopers.tiendafacil.backend.model.OrderDetails;
 import com.javalopers.tiendafacil.backend.repository.CustomerRepository;
@@ -73,19 +75,19 @@ public class OrderServiceImpl implements OrderService {
     private Order convertToEntity(OrderRequestDTO orderRequestDTO) {
         Order order = new Order();
         order.setCustomer(customerRepository.findById(orderRequestDTO.getCustomerId())
-                .orElseThrow(() -> new RuntimeException("Customer not found")));
+                .orElseThrow(() -> new CustomerDoesNotExistsException("El cliente no se encuentra en la base de datos.")));
         order.setDeliveryDate(orderRequestDTO.getDeliveryDate());
         order.setStatus(orderStatusRepository.findById(1)
-                .orElseThrow(() -> new RuntimeException("Status not found"))); // Default status
+                .orElseThrow(() -> new StatusNotFoundException("El estado no ha sido encontrado")));
         return order;
     }
 
     private void updateEntityWithDTO(OrderRequestDTO orderRequestDTO, Order order) {
         order.setCustomer(customerRepository.findById(orderRequestDTO.getCustomerId())
-                .orElseThrow(() -> new RuntimeException("Customer not found")));
+                .orElseThrow(() ->new CustomerDoesNotExistsException("El cliente no se encuentra en la base de datos.")));
         order.setDeliveryDate(orderRequestDTO.getDeliveryDate());
         order.setStatus(orderStatusRepository.findById(1)
-                .orElseThrow(() -> new RuntimeException("Status not found"))); // Default status
+                .orElseThrow(() ->  new StatusNotFoundException("El estado no ha sido encontrado")));
 
         order.getOrderDetails().clear();
         saveOrderDetails(order, orderRequestDTO.getOrderDetails());
