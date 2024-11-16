@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -30,7 +31,7 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
                 .findAll()
                 .stream()
                 .map(OrderDetailsServiceImpl::convertToDTO)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
