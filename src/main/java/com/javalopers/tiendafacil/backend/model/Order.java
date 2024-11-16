@@ -46,4 +46,16 @@ public class Order {
             fetch = FetchType.EAGER
     )
     private List<OrderDetails> orderDetails;
+
+
+    public void addOrderDetails(OrderDetails orderDetails) {
+        this.orderDetails.add(orderDetails);
+        orderDetails.setOrder(this);
+    }
+
+    public void removeOrderDetails(OrderDetails orderDetails) {
+        this.orderDetails.remove(orderDetails);
+        orderDetails.setOrder(null);
+    }
+
 }

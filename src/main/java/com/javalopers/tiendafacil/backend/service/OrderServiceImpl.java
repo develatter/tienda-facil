@@ -2,6 +2,7 @@ package com.javalopers.tiendafacil.backend.service;
 
 import com.javalopers.tiendafacil.backend.dto.OrderDTO;
 import com.javalopers.tiendafacil.backend.dto.OrderDetailsDTO;
+import com.javalopers.tiendafacil.backend.exception.*;
 import com.javalopers.tiendafacil.backend.model.Order;
 import com.javalopers.tiendafacil.backend.model.OrderDetails;
 import com.javalopers.tiendafacil.backend.repository.CustomerRepository;
@@ -13,7 +14,6 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -27,36 +27,35 @@ public class OrderServiceImpl implements OrderService {
     private final CustomerRepository customerRepository;
 
 
-
     @Override
     @Transactional
-    public OrderDTO saveOrder(OrderDTO orderDTO) {
+    public Order saveOrder(OrderDTO orderDTO) {
         Order order = convertToEntity(orderDTO);
         order = orderRepository.save(order);
-        return convertToDTO(order);
+        return order;
     }
 
     @Override
     @Transactional
-    public OrderDTO updateOrder(Integer orderId, OrderDTO orderDTO) {
+    public Order updateOrder(Integer orderId, OrderDTO orderDTO) {
         Order order = orderRepository
                 .findById(orderId)
-                .orElseThrow(() -> new NoSuchElementException("No se encuentra el pedido con ID: " + orderId));
+                .orElseThrow(() -> new OrderDoesNotExistsException("No se encuentra el pedido con ID: " + orderId));
 
         updateEntityWithDTO(orderDTO, order);
         order = orderRepository.save(order);
-        return convertToDTO(order);
+        return order;
+
     }
 
     @Override
     @Transactional
-    public OrderDTO findOrderById(Integer orderId) {
-        Order order = orderRepository
+    public Order findOrderById(Integer orderId) {
+        return orderRepository
                 .findById(orderId)
                 .orElseThrow(() ->
-                        new NoSuchElementException("No se encuentra el pedido con ID: " + orderId)
+                        new OrderDoesNotExistsException("No se encuentra el pedido con ID: " + orderId)
                 );
-        return convertToDTO(order);
     }
 
 
@@ -64,18 +63,15 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void deleteOrderById(Integer orderId) {
         if (!orderRepository.existsById(orderId)) {
-            throw new NoSuchElementException("Order not found with id: " + orderId);
+            throw new OrderDoesNotExistsException("No se encuentra el pedido con ID: " + orderId);
         }
         orderRepository.deleteById(orderId);
     }
 
     @Override
     @Transactional
-    public List<OrderDTO> findAllOrders() {
-        return orderRepository.findAll()
-                .stream()
-                .map(this::convertToDTO)
-                .toList();
+    public List<Order> findAllOrders() {
+        return orderRepository.findAll();
     }
 
     private OrderDTO convertToDTO(Order entity) {
@@ -105,54 +101,49 @@ public class OrderServiceImpl implements OrderService {
     private Order convertToEntity(OrderDTO dto) {
         Order order = new Order();
         order.setOrderId(dto.getOrderId());
-        setOrder(dto, order);
+        setOrderProperties(dto, order);
 
-        List<OrderDetails> details = new ArrayList<>();
         if (dto.getOrderDetails() != null) {
-            relateOrderDetails(dto, order, details);
+            dto.getOrderDetails().forEach(
+                    detailDTO -> addOrderDetail(order, detailDTO)
+            );
         }
-        order.setOrderDetails(details);
-
         return order;
     }
 
+    private void addOrderDetail(Order order, OrderDetailsDTO detailDTO) {
+        OrderDetails detail = new OrderDetails();
+        detail.setProductAmount(detailDTO.getProductAmount());
+        detail.setProduct(productRepository
+                .findById(detailDTO.getProductId())
+                .orElseThrow(() -> new ProductNotFoundException(
+                        "No se encuentra el producto con ID: " + detailDTO.getProductId()
+                )));
+        order.addOrderDetails(detail);
+    }
+
     private void updateEntityWithDTO(OrderDTO orderDTO, Order order) {
-        setOrder(orderDTO, order);
+        setOrderProperties(orderDTO, order);
 
-        order.getOrderDetails().clear();
+        order.getOrderDetails().forEach(order::removeOrderDetails);
+        orderDTO.getOrderDetails().forEach(
+                detailDTO -> addOrderDetail(order, detailDTO)
+        );
 
-        List<OrderDetails> newDetails = new ArrayList<>();
-        relateOrderDetails(orderDTO, order, newDetails);
-        order.getOrderDetails().addAll(newDetails);
     }
 
-    private void relateOrderDetails(OrderDTO orderDTO, Order order, List<OrderDetails> newDetails) {
-        for (OrderDetailsDTO detailDTO : orderDTO.getOrderDetails()) {
-            OrderDetails detail = new OrderDetails();
-            detail.setProductAmount(detailDTO.getProductAmount());
-            detail.setProduct(productRepository
-                    .findById(detailDTO.getProductId())
-                    .orElseThrow(() -> new NoSuchElementException(
-                            "No se encuentra el producto con ID: " + detailDTO.getProductId()
-                    )));
-            detail.setOrder(order);
-            newDetails.add(detail);
-        }
-    }
 
-    private void setOrder(OrderDTO orderDTO, Order order) {
+    private void setOrderProperties(OrderDTO orderDTO, Order order) {
         order.setOrderDate(orderDTO.getOrderDate());
         order.setDeliveryDate(orderDTO.getDeliveryDate());
-
         order.setStatus(orderStatusRepository
                 .findById(orderDTO.getStatusId())
-                .orElseThrow(() -> new NoSuchElementException(
+                .orElseThrow(() -> new StatusNotFoundException(
                         "No se encuentra el estado con ID: " + orderDTO.getStatusId()
                 )));
-
         order.setCustomer(customerRepository
                 .findById(orderDTO.getCustomerId())
-                .orElseThrow(() -> new NoSuchElementException(
+                .orElseThrow(() -> new CustomerDoesNotExistsException(
                         "No se encuentra el cliente con ID: " + orderDTO.getCustomerId()
                 )));
     }
