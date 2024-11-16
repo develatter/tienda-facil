@@ -6,11 +6,9 @@ import lombok.Data;
 
 @Data
 @Builder
-public class OrderDetailsDTO {
+public class OrderDetailsRequestDTO {
 
-    private Integer detailsId;
-
-    @NotNull(message = "El id de la orden es requerido")
+    @NotNull(message = "El id de la orden no puede ser omitido")
     private Integer orderId;
 
     @NotNull(message = "El id del producto es requerido")

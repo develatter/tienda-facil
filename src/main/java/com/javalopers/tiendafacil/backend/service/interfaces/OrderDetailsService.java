@@ -1,16 +1,13 @@
 package com.javalopers.tiendafacil.backend.service.interfaces;
 
-import com.javalopers.tiendafacil.backend.dto.OrderDetailsDTO;
-import com.javalopers.tiendafacil.backend.model.OrderDetails;
+import com.javalopers.tiendafacil.backend.dto.OrderDetailsRequestDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface OrderDetailsService {
-
-    List<OrderDetailsDTO> findAllDetails();
-    OrderDetailsDTO findDetailById(Integer id);
-    OrderDetailsDTO saveDetails(OrderDetailsDTO orderDetails);
-    OrderDetailsDTO updateDetails(Integer id, OrderDetailsDTO orderDetails);
+    List<OrderDetailsRequestDTO> findAllDetails();
+    OrderDetailsRequestDTO findDetailById(Integer id);
+    OrderDetailsRequestDTO saveDetails(OrderDetailsRequestDTO orderDetailsRequestDTO, Integer orderId);
+    OrderDetailsRequestDTO updateDetails(Integer id, OrderDetailsRequestDTO orderDetailsRequestDTO);
     void deleteDetailsById(Integer id);
 }

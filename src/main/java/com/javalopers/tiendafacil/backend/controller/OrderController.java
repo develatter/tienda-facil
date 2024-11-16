@@ -1,9 +1,8 @@
 package com.javalopers.tiendafacil.backend.controller;
 
-import com.javalopers.tiendafacil.backend.dto.OrderDTO;
+import com.javalopers.tiendafacil.backend.dto.OrderRequestDTO;
 import com.javalopers.tiendafacil.backend.dto.OrderDetailsResponseDTO;
 import com.javalopers.tiendafacil.backend.dto.OrderResponseDTO;
-import com.javalopers.tiendafacil.backend.exception.OrderDoesNotExistsException;
 import com.javalopers.tiendafacil.backend.model.Order;
 import com.javalopers.tiendafacil.backend.presenter.OrderPresenter;
 import com.javalopers.tiendafacil.backend.service.interfaces.OrderService;
@@ -25,8 +24,8 @@ public class OrderController {
     private final OrderPresenter orderPresenter;
 
     @PostMapping
-    public ResponseEntity<OrderResponseDTO> createOrder(@Valid @RequestBody OrderDTO orderDTO) {
-        Order savedOrder = orderService.saveOrder(orderDTO);
+    public ResponseEntity<OrderResponseDTO> createOrder(@Valid @RequestBody OrderRequestDTO orderRequestDTO) {
+        Order savedOrder = orderService.saveOrder(orderRequestDTO);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(orderPresenter.presentOrder(savedOrder));
@@ -47,8 +46,8 @@ public class OrderController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<OrderResponseDTO> updateOrder(@PathVariable Integer id, @Valid @RequestBody OrderDTO orderDTO) {
-        Order updatedOrder = orderService.updateOrder(id, orderDTO);
+    public ResponseEntity<OrderResponseDTO> updateOrder(@PathVariable Integer id, @Valid @RequestBody OrderRequestDTO orderRequestDTO) {
+        Order updatedOrder = orderService.updateOrder(id, orderRequestDTO);
         OrderResponseDTO orderResponseDTO = orderPresenter.presentOrder(updatedOrder);
         return ResponseEntity.ok(orderResponseDTO);
     }

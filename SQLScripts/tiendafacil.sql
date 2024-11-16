@@ -30,7 +30,7 @@ VALUES ('Entregado');
 
 CREATE TABLE IF NOT EXISTS `products`
 (
-    `product_id`          INTEGER        NOT NULL AUTO_INCREMENT UNIQUE,
+    `product_id`          INTEGER        AUTO_INCREMENT UNIQUE,
     `product_name`        VARCHAR(100)   NOT NULL,
     `product_description` TEXT,
     `unit_price`          DECIMAL(10, 2) NOT NULL,
@@ -40,11 +40,11 @@ CREATE TABLE IF NOT EXISTS `products`
 
 CREATE TABLE IF NOT EXISTS `orders`
 (
-    `order_id`      INTEGER  NOT NULL AUTO_INCREMENT UNIQUE,
+    `order_id`      INTEGER  AUTO_INCREMENT UNIQUE,
     `customer_id`   INTEGER  NOT NULL,
-    `order_date`    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `order_date`    DATETIME DEFAULT CURRENT_TIMESTAMP,
     `delivery_date` DATE     NOT NULL,
-    `status_id`     INTEGER  NOT NULL DEFAULT 1,
+    `status_id`     INTEGER  DEFAULT 1,
     PRIMARY KEY (`order_id`),
     FOREIGN KEY (`status_id`) REFERENCES `order_status` (`status_id`),
     FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`)
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `orders`
 
 CREATE TABLE IF NOT EXISTS `order_details`
 (
-    `details_id`     INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
+    `details_id`     INTEGER AUTO_INCREMENT UNIQUE,
     `order_id`       INTEGER NOT NULL,
     `product_id`     INTEGER NOT NULL,
     `product_amount` INTEGER NOT NULL,
