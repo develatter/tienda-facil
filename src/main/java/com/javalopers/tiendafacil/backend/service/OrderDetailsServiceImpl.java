@@ -1,6 +1,9 @@
 package com.javalopers.tiendafacil.backend.service;
 
 import com.javalopers.tiendafacil.backend.dto.OrderDetailsDTO;
+import com.javalopers.tiendafacil.backend.exception.DetailsNotFoundException;
+import com.javalopers.tiendafacil.backend.exception.OrderDoesNotExistsException;
+import com.javalopers.tiendafacil.backend.exception.ProductNotFoundException;
 import com.javalopers.tiendafacil.backend.model.OrderDetails;
 import com.javalopers.tiendafacil.backend.repository.OrderDetailsRepository;
 import com.javalopers.tiendafacil.backend.repository.OrderRepository;
@@ -37,7 +40,7 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
         OrderDetails orderDetails = orderDetailsRepository
                 .findById(id)
                 .orElseThrow(() ->
-                        new NoSuchElementException("No se encuentra el detalle del pedido con ID: " + id)
+                        new DetailsNotFoundException("No se encuentra el detalle del pedido con ID: " + id)
                 );
         return convertToDTO(orderDetails);
     }
@@ -54,7 +57,7 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
         OrderDetails orderDetailsEntity = orderDetailsRepository
                 .findById(id)
                 .orElseThrow(() ->
-                        new NoSuchElementException("No se encuentra el detalle del pedido con ID: " + id)
+                        new DetailsNotFoundException("No se encuentra el detalle del pedido con ID: " + id)
                 );
         updateEntityWithDTO(orderDetails, orderDetailsEntity);
         orderDetailsRepository.save(orderDetailsEntity);
@@ -64,18 +67,19 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
     @Override
     public void deleteDetailsById(Integer id) {
         if (!orderDetailsRepository.existsById(id)) {
-            throw new NoSuchElementException("No se encuentra el detalle del pedido con ID: " + id);
+            throw new DetailsNotFoundException("No se encuentra el detalle del pedido con ID: " + id);
         }
         orderDetailsRepository.deleteById(id);
     }
 
     public static OrderDetailsDTO convertToDTO(OrderDetails orderDetails) {
-        OrderDetailsDTO orderDetailsDTO = new OrderDetailsDTO();
-        orderDetailsDTO.setDetailsId(orderDetails.getDetailsId());
-        orderDetailsDTO.setOrderId(orderDetails.getOrder().getOrderId());
-        orderDetailsDTO.setProductId(orderDetails.getProduct().getProductId());
-        orderDetailsDTO.setProductAmount(orderDetails.getProductAmount());
-        return orderDetailsDTO;
+
+        return OrderDetailsDTO.builder()
+                .detailsId(orderDetails.getDetailsId())
+                .orderId(orderDetails.getOrder().getOrderId())
+                .productId(orderDetails.getProduct().getProductId())
+                .productAmount(orderDetails.getProductAmount())
+                .build();
     }
 
     private OrderDetails convertToEntity(OrderDetailsDTO orderDetailsDTO) {
@@ -89,14 +93,14 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
         orderDetails.setOrder(orderRepository
                 .findById(orderDetailsDTO.getOrderId())
                 .orElseThrow(() ->
-                        new NoSuchElementException(
+                        new OrderDoesNotExistsException(
                                 "No se encuentra el pedido con ID: " + orderDetailsDTO.getOrderId()
                         ))
         );
         orderDetails.setProduct(productRepository
                 .findById(orderDetailsDTO.getProductId())
                 .orElseThrow(() ->
-                        new NoSuchElementException(
+                        new ProductNotFoundException(
                                 "No se encuentra el producto con ID: " + orderDetailsDTO.getProductId()
                         ))
         );

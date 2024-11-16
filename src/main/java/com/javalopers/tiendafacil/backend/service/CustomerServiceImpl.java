@@ -1,6 +1,8 @@
 package com.javalopers.tiendafacil.backend.service;
 
 import com.javalopers.tiendafacil.backend.dto.CustomerDTO;
+import com.javalopers.tiendafacil.backend.exception.CustomerAlreadyExistsException;
+import com.javalopers.tiendafacil.backend.exception.CustomerDoesNotExistsException;
 import com.javalopers.tiendafacil.backend.model.Customer;
 import com.javalopers.tiendafacil.backend.repository.CustomerRepository;
 import com.javalopers.tiendafacil.backend.service.interfaces.CustomerService;
@@ -12,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @AllArgsConstructor
@@ -33,7 +34,7 @@ public class CustomerServiceImpl implements CustomerService {
         newCustomer.setMail(customerRequest.getMail());
 
         if(customerRepository.existsByMail(newCustomer.getMail())){
-            throw new IllegalArgumentException
+            throw new CustomerAlreadyExistsException
                     ("Customer with email " + newCustomer.getMail() + " already exists.");
         }
         if(customerRequest.getRegDate() == null){
@@ -88,7 +89,7 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerDTO getCustomer(Integer id) {
 
         Customer existingCustomer = customerRepository.findById(id).
-                orElseThrow(()-> new NoSuchElementException("This Customer does not exist in our System"));
+                orElseThrow(()-> new CustomerDoesNotExistsException("El cliente no existe en nuestro sistema"));
 
         CustomerDTO customerDTO = new CustomerDTO();
         customerDTO.setCustomerId(existingCustomer.getCustomerId());
@@ -107,7 +108,7 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerDTO updateCustomer(Integer id, CustomerDTO customerRequest) {
 
         Customer existingCustomer = customerRepository.findById(id).
-                orElseThrow(()-> new NoSuchElementException("This Customer does not exist in our System"));
+                orElseThrow(()-> new CustomerDoesNotExistsException("El cliente no existe en nuestro sistema"));
 
         existingCustomer.setFirstName(customerRequest.getFirstName());
         existingCustomer.setLastName(customerRequest.getLastName());
@@ -139,7 +140,7 @@ public class CustomerServiceImpl implements CustomerService {
     public void deleteCustomer(Integer id) {
 
          customerRepository.findById(id).
-                orElseThrow(()-> new NoSuchElementException("This Customer does not exist in our System"));
+                orElseThrow(()->  new CustomerDoesNotExistsException("El cliente no existe en nuestro sistema"));
 
          customerRepository.deleteById(id);
     }

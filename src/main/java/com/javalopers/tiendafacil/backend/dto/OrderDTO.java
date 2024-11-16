@@ -22,7 +22,7 @@ public class OrderDTO {
     @PastOrPresent(message = "La fecha del pedido no puede ser futura")
     private LocalDateTime orderDate;
 
-    @NotNull( message = "La fecha de entrega es obligatoria")
+    @NotNull(message = "La fecha de entrega es obligatoria")
     private LocalDate deliveryDate;
 
     @NotNull(message = "El estado del pedido no puede ser nulo")
