@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/customers")
 @AllArgsConstructor
-@Tag(name = "Clientes", description = "Operaciones relacionadas con los clientes")
+@Tag(name = "Clientes", description = "API REST CRUD para operaciones relacionadas con los clientes")
 public class CustomerController {
 
     @Autowired
@@ -42,6 +42,11 @@ public class CustomerController {
         return customerService.saveCustomer(customerRequest);
     }
 
+    /*
+    TODO: REVISAR SI en "mediaType = "application/json", schema = @Schema(implementation = CustomerDTO.class)":
+        1) hay que añadir antes de '@Schema' un @ArraySchema()
+        2) Verificar si hay que relacionarla con la DTO o con la clase de Model
+     */
     @Operation(summary = "Obtener todos los clientes", description = "Devuelve una lista de todos los clientes registrados.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de clientes obtenida exitosamente.",
