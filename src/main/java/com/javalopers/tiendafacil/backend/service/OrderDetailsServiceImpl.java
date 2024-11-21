@@ -1,9 +1,10 @@
 package com.javalopers.tiendafacil.backend.service;
 
-import com.javalopers.tiendafacil.backend.dto.OrderDetailsDTO;
+import com.javalopers.tiendafacil.backend.dto.OrderDetailsRequestDTO;
 import com.javalopers.tiendafacil.backend.exception.DetailsNotFoundException;
 import com.javalopers.tiendafacil.backend.exception.OrderDoesNotExistsException;
 import com.javalopers.tiendafacil.backend.exception.ProductNotFoundException;
+import com.javalopers.tiendafacil.backend.model.Order;
 import com.javalopers.tiendafacil.backend.model.OrderDetails;
 import com.javalopers.tiendafacil.backend.repository.OrderDetailsRepository;
 import com.javalopers.tiendafacil.backend.repository.OrderRepository;
@@ -11,12 +12,10 @@ import com.javalopers.tiendafacil.backend.repository.ProductRepository;
 import com.javalopers.tiendafacil.backend.service.interfaces.OrderDetailsService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -27,16 +26,16 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
     private ProductRepository productRepository;
 
     @Override
-    public List<OrderDetailsDTO> findAllDetails() {
+    public List<OrderDetailsRequestDTO> findAllDetails() {
         return orderDetailsRepository
                 .findAll()
                 .stream()
                 .map(OrderDetailsServiceImpl::convertToDTO)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
-    public OrderDetailsDTO findDetailById(Integer id) {
+    public OrderDetailsRequestDTO findDetailById(Integer id) {
         OrderDetails orderDetails = orderDetailsRepository
                 .findById(id)
                 .orElseThrow(() ->
@@ -46,20 +45,22 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
     }
 
     @Override
-    public OrderDetailsDTO saveDetails(OrderDetailsDTO orderDetails) {
-        OrderDetails orderDetailsEntity = convertToEntity(orderDetails);
+    public OrderDetailsRequestDTO saveDetails(OrderDetailsRequestDTO orderDetailsRequestDTO, Integer orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderDoesNotExistsException("No se encuentra el pedido con ID: " + orderId));
+        OrderDetails orderDetailsEntity = convertToEntity(orderDetailsRequestDTO, order);
         orderDetailsRepository.save(orderDetailsEntity);
         return convertToDTO(orderDetailsEntity);
     }
 
     @Override
-    public OrderDetailsDTO updateDetails(Integer id, OrderDetailsDTO orderDetails) {
+    public OrderDetailsRequestDTO updateDetails(Integer id, OrderDetailsRequestDTO orderDetailsRequestDTO) {
         OrderDetails orderDetailsEntity = orderDetailsRepository
                 .findById(id)
                 .orElseThrow(() ->
                         new DetailsNotFoundException("No se encuentra el detalle del pedido con ID: " + id)
                 );
-        updateEntityWithDTO(orderDetails, orderDetailsEntity);
+        updateEntityWithDTO(orderDetailsRequestDTO, orderDetailsEntity);
         orderDetailsRepository.save(orderDetailsEntity);
         return convertToDTO(orderDetailsEntity);
     }
@@ -72,40 +73,33 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
         orderDetailsRepository.deleteById(id);
     }
 
-    public static OrderDetailsDTO convertToDTO(OrderDetails orderDetails) {
-
-        return OrderDetailsDTO.builder()
-                .detailsId(orderDetails.getDetailsId())
-                .orderId(orderDetails.getOrder().getOrderId())
+    public static OrderDetailsRequestDTO convertToDTO(OrderDetails orderDetails) {
+        return OrderDetailsRequestDTO.builder()
                 .productId(orderDetails.getProduct().getProductId())
                 .productAmount(orderDetails.getProductAmount())
                 .build();
     }
 
-    private OrderDetails convertToEntity(OrderDetailsDTO orderDetailsDTO) {
+    private OrderDetails convertToEntity(OrderDetailsRequestDTO orderDetailsRequestDTO, Order order) {
         OrderDetails orderDetails = new OrderDetails();
-        updateEntityWithDTO(orderDetailsDTO, orderDetails);
-        orderDetails.setDetailsId(orderDetailsDTO.getDetailsId());
+        orderDetails.setOrder(order);
+        orderDetails.setProduct(productRepository.findById(orderDetailsRequestDTO.getProductId())
+                .orElseThrow(() ->
+                        new ProductNotFoundException(
+                                "No se encuentra el producto con ID: " + orderDetailsRequestDTO.getProductId()
+                        ))
+        );
+        orderDetails.setProductAmount(orderDetailsRequestDTO.getProductAmount());
         return orderDetails;
     }
 
-    private void updateEntityWithDTO(OrderDetailsDTO orderDetailsDTO, OrderDetails orderDetails) {
-        orderDetails.setOrder(orderRepository
-                .findById(orderDetailsDTO.getOrderId())
-                .orElseThrow(() ->
-                        new OrderDoesNotExistsException(
-                                "No se encuentra el pedido con ID: " + orderDetailsDTO.getOrderId()
-                        ))
-        );
-        orderDetails.setProduct(productRepository
-                .findById(orderDetailsDTO.getProductId())
+    private void updateEntityWithDTO(OrderDetailsRequestDTO orderDetailsRequestDTO, OrderDetails orderDetails) {
+        orderDetails.setProduct(productRepository.findById(orderDetailsRequestDTO.getProductId())
                 .orElseThrow(() ->
                         new ProductNotFoundException(
-                                "No se encuentra el producto con ID: " + orderDetailsDTO.getProductId()
+                                "No se encuentra el producto con ID: " + orderDetailsRequestDTO.getProductId()
                         ))
         );
-        orderDetails.setProductAmount(orderDetailsDTO.getProductAmount());
+        orderDetails.setProductAmount(orderDetailsRequestDTO.getProductAmount());
     }
-
-
 }

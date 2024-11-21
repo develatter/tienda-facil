@@ -1,0 +1,65 @@
+/* App.css */
+
+/* Reseteo de márgenes por defecto y ajuste de caja */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Contenedor principal */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: "Arial", sans-serif;
+  background-color: #f4f4f4;
+}
+
+/* Estilo del encabezado */
+.app-header {
+  background-color: #3f51b5;
+  color: white;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.app-header-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.app-title {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.app-description {
+  font-size: 1.1rem;
+  font-weight: 300;
+  margin-top: 0;
+}
+
+/* Estilo del contenido principal */
+.app-main {
+  flex: 1;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 20px auto;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo del pie de página */
+.app-footer {
+  background-color: #3f51b5;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  font-size: 0.9rem;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
