@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -45,7 +46,7 @@ public class Order {
             orphanRemoval = true,
             fetch = FetchType.EAGER
     )
-    private List<OrderDetails> orderDetails;
+    private List<OrderDetails> orderDetails = new ArrayList<>();
 
 
     public void addOrderDetails(OrderDetails orderDetails) {

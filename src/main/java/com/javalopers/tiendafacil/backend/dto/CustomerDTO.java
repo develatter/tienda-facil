@@ -2,11 +2,13 @@ package com.javalopers.tiendafacil.backend.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
+@Builder @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class CustomerDTO {
 
     private Integer customerId;

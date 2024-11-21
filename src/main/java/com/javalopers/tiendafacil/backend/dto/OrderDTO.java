@@ -8,12 +8,14 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @Builder
 @ValidDeliveryDate
 public class OrderDTO {
+
     private Integer orderId;
 
     @NotNull(message = "El id del cliente es obligatorio")
@@ -28,5 +30,5 @@ public class OrderDTO {
     @NotNull(message = "El estado del pedido no puede ser nulo")
     private Integer statusId;
 
-    private List<OrderDetailsDTO> orderDetails;
+    private List<OrderDetailsDTO> orderDetails = new ArrayList<>();
 }

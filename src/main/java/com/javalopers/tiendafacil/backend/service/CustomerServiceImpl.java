@@ -115,7 +115,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         // Corroborando único usuario por Mail
         if (!existingCustomer.getMail().equals(customerRequest.getMail()) && customerRepository.existsByMail(customerRequest.getMail())) {
-            throw new IllegalArgumentException("This Mail already exists in our system");
+            throw new CustomerAlreadyExistsException("El cliente con este email ya está registrado en nuestro sistema");
         }
 
         existingCustomer.setMail(customerRequest.getMail());

@@ -1,7 +1,6 @@
 package com.javalopers.tiendafacil.backend.controller;
 
 import com.javalopers.tiendafacil.backend.dto.ProductDTO;
-import com.javalopers.tiendafacil.backend.model.Product;
 import com.javalopers.tiendafacil.backend.service.interfaces.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -14,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/products")
 @AllArgsConstructor
-public class ProductoController {
+public class ProductController {
 
     @Autowired
     private ProductService productService;
