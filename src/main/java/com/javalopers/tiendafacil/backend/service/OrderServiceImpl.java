@@ -12,6 +12,7 @@ import com.javalopers.tiendafacil.backend.repository.CustomerRepository;
 import com.javalopers.tiendafacil.backend.repository.OrderRepository;
 import com.javalopers.tiendafacil.backend.repository.OrderStatusRepository;
 import com.javalopers.tiendafacil.backend.repository.ProductRepository;
+import com.javalopers.tiendafacil.backend.service.interfaces.CustomerService;
 import com.javalopers.tiendafacil.backend.service.interfaces.OrderService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
+    private final CustomerService customerService;
     private final OrderRepository orderRepository;
     private final OrderStatusRepository orderStatusRepository;
     private final ProductRepository productRepository;
@@ -34,6 +36,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = convertToEntity(orderRequestDTO);
         order = orderRepository.save(order);
         saveOrderDetails(order, orderRequestDTO.getOrderDetails());
+        customerService.activateCustomer(order.getCustomer().getCustomerId());
         return order;
     }
 
@@ -60,10 +63,17 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void deleteOrderById(Integer orderId) {
+
         if (!orderRepository.existsById(orderId)) {
             throw new OrderDoesNotExistsException("No se encuentra el pedido con ID: " + orderId);
         }
+
+        Order order = orderRepository.findById(orderId).orElseThrow(() ->
+                new OrderDoesNotExistsException("No se encuentra el pedido con ID: " + orderId));
+
+        Integer customerId = order.getCustomer().getCustomerId();
         orderRepository.deleteById(orderId);
+        customerService.deactivateCustomerIfNoRecentOrders(customerId);
     }
 
     @Override

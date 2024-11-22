@@ -5,6 +5,7 @@ import com.javalopers.tiendafacil.backend.exception.CustomerAlreadyExistsExcepti
 import com.javalopers.tiendafacil.backend.exception.CustomerDoesNotExistsException;
 import com.javalopers.tiendafacil.backend.model.Customer;
 import com.javalopers.tiendafacil.backend.repository.CustomerRepository;
+import com.javalopers.tiendafacil.backend.repository.OrderRepository;
 import com.javalopers.tiendafacil.backend.service.interfaces.CustomerService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -21,6 +23,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
 
     @Transactional
     @Override
@@ -35,15 +40,14 @@ public class CustomerServiceImpl implements CustomerService {
 
         if(customerRepository.existsByMail(newCustomer.getMail())){
             throw new CustomerAlreadyExistsException
-                    ("Customer with email " + newCustomer.getMail() + " already exists.");
+                    ("El Cliente con mail " + newCustomer.getMail() + " ya existe en el sistema.");
         }
         if(customerRequest.getRegDate() == null){
             customerRequest.setRegDate(LocalDateTime.now());
         }
 
         newCustomer.setRegDate(customerRequest.getRegDate());
-        newCustomer.setActive(customerRequest.getActive());
-
+        //newCustomer.setActive(customerRequest.getActive());
 
         customerRepository.save(newCustomer);
 
@@ -143,5 +147,34 @@ public class CustomerServiceImpl implements CustomerService {
                 orElseThrow(()->  new CustomerDoesNotExistsException("El cliente no existe en nuestro sistema"));
 
          customerRepository.deleteById(id);
+    }
+
+    @Override
+    public void activateCustomer(Integer customerId) {
+
+        Optional<Customer> customer = customerRepository.findById(customerId);
+
+        if(customer.isPresent()){
+            Customer c = customer.get();
+            c.setActive(true);
+            customerRepository.save(c);
+        }
+    }
+
+    @Override
+    public void deactivateCustomerIfNoRecentOrders(Integer customerId) {
+
+        LocalDateTime twoWeeksAgo = LocalDateTime.now().minusDays(14);
+        boolean hasRecentOrders = orderRepository.existsByCustomer_CustomerIdAndOrderDateAfter(customerId, twoWeeksAgo);
+
+        if(!hasRecentOrders){
+            Optional<Customer> customer = customerRepository.findById(customerId);
+
+            if(customer.isPresent()){
+                Customer c = customer.get();
+                c.setActive(false);
+                customerRepository.save(c);
+            }
+        }
     }
 }

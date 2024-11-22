@@ -1,8 +1,8 @@
 package com.javalopers.tiendafacil.backend.service;
 
 import com.javalopers.tiendafacil.backend.dto.CustomerDTO;
-import com.javalopers.tiendafacil.backend.dto.OrderDTO;
-import com.javalopers.tiendafacil.backend.dto.OrderDetailsDTO;
+import com.javalopers.tiendafacil.backend.dto.OrderDetailsResponseDTO;
+import com.javalopers.tiendafacil.backend.dto.OrderResponseDTO;
 import com.javalopers.tiendafacil.backend.model.Order;
 import com.javalopers.tiendafacil.backend.model.OrderDetails;
 import com.javalopers.tiendafacil.backend.repository.CustomerRepository;
@@ -42,8 +42,8 @@ public class ReportServiceImpl implements ReportService {
             customerDTO.setLastName((String) row[2]);
             customerDTO.setAddress((String) row[3]);
             customerDTO.setMail((String) row[4]);
-            customerDTO.setRegDate(convertToDateTime((Timestamp) row[5]));  // Aquí se toma la fecha de registro desde la consulta
-            customerDTO.setActive(((Long) row[6]) == 1); // Este es un valor que puedes determinar según tu lógica
+            customerDTO.setRegDate(convertToDateTime((Timestamp) row[5]));
+            customerDTO.setActive(((Long) row[6]) == 1);
             customerDTOList.add(customerDTO);
         }
 
@@ -51,42 +51,39 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public List<OrderDTO> getPendingOrders() {
+    public List<OrderResponseDTO> getPendingOrders() {
 
-        // Obtiene las órdenes pendientes del repositorio
         List<Order> ordenesPendiente = orderRepository.findPendingOrder();
 
-        // Convierte cada Order a OrderDTO utilizando el Builder
         return ordenesPendiente.stream()
-                .map(this::convertToDTO)  // Llama al método que convierte cada Order en OrderDTO
-                .collect(Collectors.toList());  // Recoge todos los DTOs en una lista
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
-    // Método para convertir de Order a OrderDTO utilizando el Builder
-    public OrderDTO convertToDTO(Order order) {
-        // Convierte los detalles del pedido
-        List<OrderDetailsDTO> orderDetailsDTO = order.getOrderDetails().stream()
-                .map(this::convertOrderDetailsToDTO)  // Asumiendo que tienes un método para convertir detalles
+    // Método para convertir de Order a OrderResponseDTO
+    public OrderResponseDTO convertToDTO(Order order) {
+
+        List<OrderDetailsResponseDTO> orderDetailsDTO = order.getOrderDetails().stream()
+                .map(this::convertOrderDetailsToDTO)
                 .collect(Collectors.toList());
 
-        // Usamos el Builder para crear el OrderDTO
-        return OrderDTO.builder()
+        return OrderResponseDTO.builder()
                 .orderId(order.getOrderId())
-                .customerId(order.getCustomer().getCustomerId())
+                .customerName(order.getCustomer().getFirstName())
                 .orderDate(order.getOrderDate())
                 .deliveryDate(order.getDeliveryDate())
-                .statusId(order.getStatus().getStatusId())
+                .status(order.getStatus().getStatus())
                 .orderDetails(orderDetailsDTO)
                 .build();
     }
 
-    // Método para convertir un detalle de la orden a OrderDetailsDTO (esto es solo un ejemplo)
-    private OrderDetailsDTO convertOrderDetailsToDTO(OrderDetails orderDetails) {
-        return OrderDetailsDTO.builder()
-                .detailsId(orderDetails.getDetailsId())
-                .orderId(orderDetails.getOrder().getOrderId())
+    // Método para convertir de OrderDetails a OrderDetailsDTO
+    private OrderDetailsResponseDTO convertOrderDetailsToDTO(OrderDetails orderDetails) {
+        return OrderDetailsResponseDTO.builder()
                 .productId(orderDetails.getProduct().getProductId())
+                .productName(orderDetails.getProduct().getProductName())
                 .productAmount(orderDetails.getProductAmount())
+                .productPrice(orderDetails.getProduct().getUnitPrice())
                 .build();
     }
 

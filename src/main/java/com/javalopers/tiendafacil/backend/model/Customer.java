@@ -39,9 +39,9 @@ public class Customer {
     @Schema(description = "Fecha de registro del cliente", example = "2024-11-01T12:00:00")
     private LocalDateTime regDate;
 
-    @Column(nullable = false)
-    @Schema(description = "Estado de activación del cliente", example = "true")
-    private Boolean active;
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Schema(description = "Estado de activación del cliente", example = "false")
+    private Boolean active = false;
 
     // Relación con Order
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)

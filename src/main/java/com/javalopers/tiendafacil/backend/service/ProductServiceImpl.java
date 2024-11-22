@@ -1,6 +1,7 @@
 package com.javalopers.tiendafacil.backend.service;
 
 import com.javalopers.tiendafacil.backend.dto.ProductDTO;
+import com.javalopers.tiendafacil.backend.exception.ProductNotFoundException;
 import com.javalopers.tiendafacil.backend.model.Product;
 import com.javalopers.tiendafacil.backend.repository.ProductRepository;
 import com.javalopers.tiendafacil.backend.service.interfaces.ProductService;
@@ -74,7 +75,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO getProduct (Integer id) {
 
         Product existingProduct = productRepository.findById(id).
-                orElseThrow(()-> new NoSuchElementException("This Product does not exist in our System"));
+                orElseThrow(()-> new ProductNotFoundException("Este Producto no existe en nuestro sistema"));
 
         ProductDTO productDTO = new ProductDTO();
         productDTO.setProductId(existingProduct.getProductId());
@@ -90,14 +91,14 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO updateProduct(Integer id, ProductDTO productRequest) {
 
         Product existingProduct = productRepository.findById(id).
-                orElseThrow(()-> new NoSuchElementException("This Product does not exist in our System"));
+                orElseThrow(()-> new ProductNotFoundException("Este Producto no existe en nuestro sistema"));
 
         existingProduct.setProductName(productRequest.getProductName());
 
         // Corroborando única Descripción
         if (!existingProduct.getProductDescription().equals(productRequest.getProductDescription())
                 && productRepository.existsByProductDescription(productRequest.getProductDescription())) {
-            throw new IllegalArgumentException("This Product Description already exists in our system");
+            throw new IllegalArgumentException("Este producto ya existe en nuestro sistema");
         }
 
         existingProduct.setProductDescription(productRequest.getProductDescription());
@@ -122,7 +123,7 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct (Integer id) {
 
         productRepository.findById(id).
-                orElseThrow(()-> new NoSuchElementException("This Product does not exist in our System"));
+                orElseThrow(()-> new ProductNotFoundException("Este Producto no existe en nuestro sistema"));
 
         productRepository.deleteById(id);
     }
