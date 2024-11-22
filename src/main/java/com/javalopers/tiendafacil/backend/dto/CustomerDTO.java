@@ -34,7 +34,6 @@ public class CustomerDTO {
     @Schema(description = "Fecha de registro del cliente.", example = "2024-11-18T14:30:00")
     private LocalDateTime regDate;
 
-    @NotNull(message = "El estado del Cliente es obligatorio")
-    @Schema(description = "Estado del cliente (activo/inactivo).", example = "true", required = true)
+    @Schema(description = "Estado del cliente (activo/inactivo).", example = "true", required = false)
     private Boolean active;
 }

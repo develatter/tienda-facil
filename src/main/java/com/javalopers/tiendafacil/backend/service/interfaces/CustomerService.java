@@ -1,10 +1,12 @@
 package com.javalopers.tiendafacil.backend.service.interfaces;
 
 import com.javalopers.tiendafacil.backend.dto.CustomerDTO;
+import com.javalopers.tiendafacil.backend.model.Customer;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
+import java.util.Optional;
 
 @Tag(name = "Customer Service", description = "Service for customer operations")
 public interface CustomerService {
@@ -23,4 +25,14 @@ public interface CustomerService {
 
     @Operation(summary = "Delete customer by ID", description = "Deletes a customer identified by their unique ID")
     void deleteCustomer(Integer id);
+
+    //Método de activación cliente a true
+    @Operation(summary = "Activate customer to -true-", description = "Modifies the initial status of a customer once an order has been placed")
+    void activateCustomer (Integer customerId);
+
+    //Método para desactivar cliente si no tiene pedidos recientes
+    @Operation(summary = "Deactivate customer to -false-", description = "Modifies the status of a customer once an order has been deleted")
+    void deactivateCustomerIfNoRecentOrders (Integer customerId);
+
+
 }
